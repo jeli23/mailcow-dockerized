@@ -131,7 +131,9 @@ class mailcowPdo extends OAuth2\Storage\Pdo {
   }
 }
 $oauth2_scope_storage = new OAuth2\Storage\Memory(array('default_scope' => 'profile', 'supported_scopes' => array('profile')));
-$oauth2_storage = new mailcowPdo(array('dsn' => $dsn, 'username' => $database_user, 'password' => $database_pass));
+// Reuse the existing PDO connection so TLS options from mailcow_db_dsn() apply;
+// passing only the DSN would open a second, non-TLS connection
+$oauth2_storage = new mailcowPdo($pdo);
 $oauth2_server = new OAuth2\Server($oauth2_storage, array(
     'refresh_token_lifetime'         => $REFRESH_TOKEN_LIFETIME,
     'access_lifetime'                => $ACCESS_TOKEN_LIFETIME,
