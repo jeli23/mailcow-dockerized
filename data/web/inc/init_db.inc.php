@@ -1543,6 +1543,9 @@ function init_db_schema()
 }
 if (php_sapi_name() == "cli") {
   include '/web/inc/vars.inc.php';
+  if (file_exists('/web/inc/vars.local.inc.php')) {
+    include '/web/inc/vars.local.inc.php';
+  }
   include '/web/inc/functions.inc.php';
   include '/web/inc/functions.docker.inc.php';
   // $now = new DateTime();
@@ -1552,13 +1555,13 @@ if (php_sapi_name() == "cli") {
   // $hrs = floor($mins / 60);
   // $mins -= $hrs * 60;
   // $offset = sprintf('%+d:%02d', $hrs*$sgn, $mins);
-  $dsn = $database_type . ":unix_socket=" . $database_sock . ";dbname=" . $database_name;
   $opt = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
     //PDO::MYSQL_ATTR_INIT_COMMAND => "SET time_zone = '" . $offset . "', group_concat_max_len = 3423543543;",
   ];
+  $dsn = mailcow_db_dsn($opt);
   $pdo = new PDO($dsn, $database_user, $database_pass, $opt);
   $stmt = $pdo->query("SELECT COUNT('OK') AS OK_C FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'sogo_view' OR TABLE_NAME = '_sogo_static_view';");
   $res = $stmt->fetch(PDO::FETCH_ASSOC);

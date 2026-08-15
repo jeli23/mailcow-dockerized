@@ -7,13 +7,12 @@ if (file_exists(__DIR__ . '/../web/inc/vars.local.inc.php')) {
 require_once __DIR__ . '/../web/inc/lib/vendor/autoload.php';
 
 // Init database
-//$dsn = $database_type . ':host=' . $database_host . ';dbname=' . $database_name;
-$dsn = $database_type . ":unix_socket=" . $database_sock . ";dbname=" . $database_name;
 $opt = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
+$dsn = mailcow_db_dsn($opt);
 try {
   $pdo = new PDO($dsn, $database_user, $database_pass, $opt);
 }

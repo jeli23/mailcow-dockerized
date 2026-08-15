@@ -189,6 +189,17 @@ DBUSER=mailcow
 DBPASS=${MAILCOW_DBPASS:-$(LC_ALL=C </dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)}
 DBROOT=${MAILCOW_DBROOT:-$(LC_ALL=C </dev/urandom tr -dc A-Za-z0-9 2> /dev/null | head -c 28)}
 
+# Connect the mailcow UI/PHP layer to MySQL/MariaDB via TCP instead of the unix socket
+# of the bundled mysql-mailcow container, e.g. to use an external database server.
+# Leave DBHOST empty to keep using the unix socket.
+DBHOST=
+DBPORT=3306
+# Path to a CA bundle inside the php-fpm container; when set, the TCP connection is TLS encrypted.
+# Most managed databases require TLS (AWS RDS bundle: https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem)
+DBSSL_CA=
+# Verify the database server certificate against DBSSL_CA (y/n)
+DBSSL_VERIFY=n
+
 # ------------------------------
 # REDIS configuration
 # ------------------------------

@@ -60,6 +60,10 @@ adapt_new_options() {
   "ACME_DNS_CHALLENGE"
   "ACME_DNS_PROVIDER"
   "ACME_ACCOUNT_EMAIL"
+  "DBHOST"
+  "DBPORT"
+  "DBSSL_CA"
+  "DBSSL_VERIFY"
   )
 
   sed -i --follow-symlinks '$a\' mailcow.conf
@@ -308,6 +312,24 @@ adapt_new_options() {
         ACME_ACCOUNT_EMAIL)
             echo '# Account email for ACME DNS-01 challenge registration' >> mailcow.conf
             echo 'ACME_ACCOUNT_EMAIL=me@example.com' >> mailcow.conf
+            ;;
+        DBHOST)
+            echo '# Connect the mailcow UI/PHP layer to MySQL/MariaDB via TCP instead of the unix socket' >> mailcow.conf
+            echo '# of the bundled mysql-mailcow container, e.g. to use an external database server.' >> mailcow.conf
+            echo '# Leave DBHOST empty to keep using the unix socket.' >> mailcow.conf
+            echo 'DBHOST=' >> mailcow.conf
+            ;;
+        DBPORT)
+            echo 'DBPORT=3306' >> mailcow.conf
+            ;;
+        DBSSL_CA)
+            echo '# Path to a CA bundle inside the php-fpm container; when set, the TCP connection is TLS encrypted.' >> mailcow.conf
+            echo '# Most managed databases require TLS (AWS RDS bundle: https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem)' >> mailcow.conf
+            echo 'DBSSL_CA=' >> mailcow.conf
+            ;;
+        DBSSL_VERIFY)
+            echo '# Verify the database server certificate against DBSSL_CA (y/n)' >> mailcow.conf
+            echo 'DBSSL_VERIFY=n' >> mailcow.conf
             ;;
         *)
             echo "${option}=" >> mailcow.conf

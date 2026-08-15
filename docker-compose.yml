@@ -158,6 +158,10 @@ services:
         - DBNAME=${DBNAME}
         - DBUSER=${DBUSER}
         - DBPASS=${DBPASS}
+        - DBHOST=${DBHOST:-}
+        - DBPORT=${DBPORT:-3306}
+        - DBSSL_CA=${DBSSL_CA:-}
+        - DBSSL_VERIFY=${DBSSL_VERIFY:-n}
         - MAILCOW_HOSTNAME=${MAILCOW_HOSTNAME}
         - MAILCOW_PASS_SCHEME=${MAILCOW_PASS_SCHEME:-BLF-CRYPT}
         - IMAP_PORT=${IMAP_PORT:-143}

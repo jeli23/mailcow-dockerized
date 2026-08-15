@@ -42,12 +42,12 @@ catch (Exception $e) {
 }
 
 // Init database
-$dsn = $database_type . ":unix_socket=" . $database_sock . ";dbname=" . $database_name;
 $opt = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
+$dsn = mailcow_db_dsn($opt);
 try {
   $pdo = new PDO($dsn, $database_user, $database_pass, $opt);
 }

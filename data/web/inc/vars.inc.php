@@ -10,10 +10,29 @@ This file will be reset on upgrades.
 // SQL database connection variables
 $database_type = 'mysql';
 $database_sock = '/var/run/mysqld/mysqld.sock';
-$database_host = 'mysql';
+// When DBHOST is set, connect via TCP (host/port) instead of the unix socket, e.g. to an external server
+$database_host = getenv('DBHOST');
+$database_port = getenv('DBPORT') ?: 3306;
+// Path to a CA bundle; when set, the TCP connection is TLS encrypted (required by most managed databases)
+$database_ssl_ca = getenv('DBSSL_CA');
+// Verify the server certificate against DBSSL_CA (y/n)
+$database_ssl_verify = (getenv('DBSSL_VERIFY') == 'y');
 $database_user = getenv('DBUSER');
 $database_pass = getenv('DBPASS');
 $database_name = getenv('DBNAME');
+
+// Reads the connection variables above at call time, so vars.local.inc.php overrides are honored
+function mailcow_db_dsn(&$opt) {
+  global $database_type, $database_sock, $database_host, $database_port, $database_name, $database_ssl_ca, $database_ssl_verify;
+  if (empty($database_host)) {
+    return $database_type . ":unix_socket=" . $database_sock . ";dbname=" . $database_name;
+  }
+  if (!empty($database_ssl_ca)) {
+    $opt[PDO::MYSQL_ATTR_SSL_CA] = $database_ssl_ca;
+    $opt[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $database_ssl_verify;
+  }
+  return $database_type . ":host=" . $database_host . ";port=" . $database_port . ";dbname=" . $database_name;
+}
 
 // Other variables
 $mailcow_hostname = getenv('MAILCOW_HOSTNAME');
