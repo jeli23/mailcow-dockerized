@@ -22,6 +22,11 @@ $database_pass = getenv('DBPASS');
 $database_name = getenv('DBNAME');
 
 // Reads the connection variables above at call time, so vars.local.inc.php overrides are honored
+// Guarded: init_db.inc.php re-includes this file with plain `include`
+// (not require_once) under CLI, which would redeclare this function and
+// fatal every cron job. Stock vars.inc.php only assigns variables, so
+// upstream never hits this.
+if (!function_exists('mailcow_db_dsn')) {
 function mailcow_db_dsn(&$opt) {
   global $database_type, $database_sock, $database_host, $database_port, $database_name, $database_ssl_ca, $database_ssl_verify;
   if (empty($database_host)) {
@@ -33,6 +38,7 @@ function mailcow_db_dsn(&$opt) {
   }
   return $database_type . ":host=" . $database_host . ";port=" . $database_port . ";dbname=" . $database_name;
 }
+} // end function_exists guard
 
 // Other variables
 $mailcow_hostname = getenv('MAILCOW_HOSTNAME');
