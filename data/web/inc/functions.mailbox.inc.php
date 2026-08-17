@@ -5259,7 +5259,9 @@ function mailbox($_action, $_type, $_data = null, $_extra = null) {
           // Determine last logins
           $stmt = $pdo->prepare("SELECT MAX(`datetime`) AS `datetime`, `service` FROM `sasl_log`
             WHERE `username` = :mailbox
-                GROUP BY `service` DESC");
+                GROUP BY `service`");  // no DESC: MySQL 8.0 removed the
+          // ASC/DESC qualifier on GROUP BY (MariaDB still accepts it). Row order
+          // is irrelevant here -- the loop below dispatches each row by `service`.
           $stmt->execute(array(':mailbox' => $_data));
           $SaslLogsData  = $stmt->fetchAll(PDO::FETCH_ASSOC);
           foreach ($SaslLogsData as $SaslLogs) {
