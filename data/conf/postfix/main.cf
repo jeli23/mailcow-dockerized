@@ -193,5 +193,5 @@ postscreen_dnsbl_sites = wl.mailspike.net=127.0.0.[18;19;20]*-2
 
 
 # User Overrides
-myhostname = mail.tokomasjawa.com
+myhostname = mailserver.tokomasjawa.com
 
